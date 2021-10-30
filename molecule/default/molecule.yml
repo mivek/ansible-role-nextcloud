@@ -1,0 +1,24 @@
+---
+dependency:
+  name: galaxy
+  options:
+    role-file: molecule/default/requirements.yml
+driver:
+  name: docker
+platforms:
+  - name: instance
+    image: {MOLECULE_DISTRO:-geerlingguy/docker-debian10-ansible:latest}
+    command: ""
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: True
+    pre_build_image: true
+    etc_hosts:
+      "mynextcloud.com": "127.0.0.1"
+provisioner:
+  name: ansible
+  inventory:
+    links:
+      host_vars: inventory/host_vars
+verifier:
+  name: ansible

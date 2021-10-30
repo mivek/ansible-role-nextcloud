@@ -1,0 +1,74 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: instance
+  gather_facts: true
+  become: true
+  tasks:
+
+  - name: Get stat of installation directory
+    ansible.builtin.stat:
+      path: /var/www/nextcloud
+    register: nextcloud_install_directory
+
+  - name: Get stat of the configuration file
+    ansible.builtin.stat:
+      path: /var/www/nextcloud/config/config.php
+    register: nextcloud_configuration
+
+  - name: Get stat on the data directory
+    ansible.builtin.stat:
+      path: /opt/nextcloud
+    register: nextcloud_data
+
+  - name: Access the uri
+    ansible.builtin.uri:
+      url: http://mynextcloud.com/login
+      return_content: true
+    register: http
+
+  - name: Run the status command
+    ansible.builtin.command:
+      cmd: php occ status
+      chdir: /var/www/nextcloud
+    become_user: nginx
+    become: yes
+    register: status
+
+  - name: Checks on installation folder
+    ansible.builtin.assert:
+      that:
+        - nextcloud_install_directory.stat.isdir
+        - nextcloud_install_directory.stat.pw_name == 'nginx'
+        - nextcloud_install_directory.stat.gr_name == 'nginx'
+        - nextcloud_install_directory.stat.mode == '0750'
+
+  - name: Checks on configuration file
+    ansible.builtin.assert:
+      that:
+        - nextcloud_configuration.stat.isreg
+        - nextcloud_configuration.stat.pw_name == 'nginx'
+        - nextcloud_configuration.stat.gr_name == 'nginx'
+        - nextcloud_configuration.stat.mode == '0640'
+
+  - name: Checks on the data directory
+    ansible.builtin.assert:
+      that:
+        - nextcloud_data.stat.isdir
+        - nextcloud_data.stat.pw_name == 'nginx'
+        - nextcloud_data.stat.gr_name == 'nginx'
+        - nextcloud_data.stat.mode == '0750'
+
+  - name: Checks on status command
+    ansible.builtin.assert:
+      that:
+        - "'  - installed: true' in status.stdout_lines"
+        - "'  - version: 22.2.0.2' in status.stdout_lines"
+
+  - name: Checks that nextcloud page is correctly displayed
+    ansible.builtin.assert:
+      that:
+        - http.status == 200
+        - http.content is search("<title>\s*Nextcloud\s*</title>")
+        - http.content is search("a safe home for all your data")

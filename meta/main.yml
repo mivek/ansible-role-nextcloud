@@ -1,0 +1,20 @@
+galaxy_info:
+  author: mivek
+  description: This role installs and configure Nextcloud on a server.
+  role_name: nextcloud
+  issue_tracker_url: https://github.com/mivek/ansible-role-nextcloud/issues
+
+  license: BSD-3
+
+  min_ansible_version: 2.9
+
+  platforms:
+    - name: Debian
+      versions:
+       - buster
+       - stretch
+
+  galaxy_tags:
+    - nextcloud
+
+dependencies: []

@@ -1,0 +1,6 @@
+---
+# handlers file for ansible-role-nextcloud
+- name: restart_webserver
+  service:
+    name: "{{ nextcloud_server_web }}"
+    state: restarted

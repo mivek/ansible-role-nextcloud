@@ -1,0 +1,87 @@
+---
+####################
+# Role PHP versions
+####################
+php_version: '8.0'
+php_versions_install_recommends: true
+
+###################
+# Role PHPl
+###################
+php_default_version_debian: "{{ php_version }}"
+php_enable_webserver: true
+php_packages_extra:
+  - php-imap
+  - php-imagick
+  - "php{{ php_default_version_debian }}-xml"
+  - "php{{ php_default_version_debian }}-zip"
+  - "php{{ php_default_version_debian }}-mbstring"
+  - php-redis
+  - php-bcmath
+  - php-gmp
+  - php-mysql
+  - php-pgsql
+  - php-bz2
+  - php-apcu
+php_webserver_daemon: nginx
+php_enable_php_fpm: true
+php_fpm_listen: '/var/run/php/php8.0-fpm.sock'
+php_memory_limit: "512M"
+php_opcache_max_accelerated_files: '10000'
+php_opcache_memory_consumption: '128'
+php_opcache_revalidate_freq: '1'
+php_apc_enable_cli: '1'
+php_fpm_pool_user: nginx
+php_fpm_pool_group: nginx
+####################
+# Role Postgres
+####################
+postgresql_database:
+  - name: nextcloud
+postgresql_users:
+  - name: nextcloud_db
+    password: nextcloud
+    role_attr_flags: CREATEDB,NOSUPERUSER
+postgresql_hba_entries:
+  - { type: local, database: all, user: postgres, auth_method: peer }
+  - { type: local, database: all, user: nextcloud_db, auth_method: peer }
+  - { type: local, database: all, user: all, auth_method: peer }
+  - { type: host, database: all, user: all, address: '127.0.0.1/32', auth_method: md5 }
+  - { type: host, database: all, user: all, address: '::1/128', auth_method: md5 }
+####################
+# Role Nginx
+####################
+nginx_type: opensource
+nginx_state: latest
+
+
+####################
+# Nextcloud
+####################
+nextcloud_server_http_use_https: false
+nextcloud_server_http_server_name: mynextcloud.com
+nextcloud_webserver_user: nginx
+nextcloud_webserver_group: nginx
+nextcloud_php_executable: php
+nextcloud_database_type: pgsql
+nextcloud_database_name: nextcloud
+nextcloud_database_user: nextcloud_db
+nextcloud_database_password: nextcloud
+nextcloud_admin_user: admin
+nextcloud_admin_password: password
+nextcloud_settings:
+  - name: 'memcache.locking'
+    value: '\OC\Memcache\Redis'
+  - name: 'memcache.local'
+    value: '\OC\Memcache\APCu'
+  - name: 'enable_previews'
+    value: false
+    type: boolean
+
+nextcloud_redis:
+  host: '127.0.0.1'
+  port: 6379
+
+nextcloud_trusted_domains:
+  - localhost
+  - mynextcloud.com

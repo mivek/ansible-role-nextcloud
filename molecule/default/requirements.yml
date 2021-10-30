@@ -1,0 +1,6 @@
+roles:
+  - geerlingguy.php-versions
+  - geerlingguy.php
+  - geerlingguy.postgresql
+  - nginxinc.nginx
+  - geerlingguy.redis

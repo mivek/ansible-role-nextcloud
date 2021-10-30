@@ -1,0 +1,19 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        name: gpg
+        update_cache: true
+
+- name: Prepare
+  hosts: all
+  become: true
+  roles:
+    - nginxinc.nginx
+    - geerlingguy.php-versions
+    - geerlingguy.php
+    - geerlingguy.postgresql
+    - geerlingguy.redis
+
