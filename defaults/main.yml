@@ -33,4 +33,3 @@ nextcloud_database_password:
 nextcloud_admin_user:
 nextcloud_admin_password:
 nextcloud_apps_settings: []
-

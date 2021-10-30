@@ -41,8 +41,8 @@ jobs:
     strategy:
       matrix:
         distro:
-          - geerlingguy/docker-debian10-ansible:latest
-          - geerlingguy/docker-debian9-ansible:latest
+          - debian10
+          - debian9
 
     steps:
       - name: Check out the codebase.
