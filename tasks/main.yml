@@ -9,7 +9,3 @@
 
 - name: Configure backup
   ansible.builtin.include_tasks: backup.yml
-
-
-
-
