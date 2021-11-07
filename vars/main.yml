@@ -5,3 +5,5 @@ __nextcloud_download_url: "https://download.nextcloud.com/server/releases/nextcl
 __nextcloud_md5_url: "https://download.nextcloud.com/server/releases/nextcloud-{{ nextcloud_version }}.tar.bz2.md5"
 __nextcloud_download_dest: "/tmp/nextcloud-{{ nextcloud_version }}.tar.bz2"
 __nextcloud_installation_directory: "{{ nextcloud_server_location }}/nextcloud"
+__nextcloud_backup_dependencies:
+  - rsync

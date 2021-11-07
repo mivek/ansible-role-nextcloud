@@ -4,4 +4,4 @@
   tasks:
     - name: "Include ansible-role-nextcloud"
       include_role:
-        name: "mivek.nextcloud"
+        name: "ansible-role-nextcloud"

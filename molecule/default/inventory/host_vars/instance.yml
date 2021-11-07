@@ -37,9 +37,9 @@ php_fpm_pool_group: nginx
 # Role Postgres
 ####################
 postgresql_database:
-  - name: nextcloud
-postgresql_users:
   - name: nextcloud_db
+postgresql_users:
+  - name: nextcloud
     password: nextcloud
     role_attr_flags: CREATEDB,NOSUPERUSER
 postgresql_hba_entries:
@@ -63,10 +63,12 @@ nextcloud_server_http_server_name: mynextcloud.com
 nextcloud_webserver_user: nginx
 nextcloud_webserver_group: nginx
 nextcloud_php_executable: php
-nextcloud_database_type: pgsql
-nextcloud_database_name: nextcloud
-nextcloud_database_user: nextcloud_db
-nextcloud_database_password: nextcloud
+nextcloud_database:
+  type: pgsql
+  host: localhost
+  name: nextcloud_db
+  user: nextcloud
+  password: nextcloud
 nextcloud_admin_user: admin
 nextcloud_admin_password: password
 nextcloud_settings:
@@ -85,3 +87,9 @@ nextcloud_redis:
 nextcloud_trusted_domains:
   - localhost
   - mynextcloud.com
+
+nextcloud_backup_directory: /mnt/nextcloud_backup
+nextcloud_backup_cron:
+  minute: 0
+  hour: 0
+  day: '*/2'
