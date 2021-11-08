@@ -1,0 +1,35 @@
+---
+- name: Configure applications
+  ansible.builtin.command:
+    cmd: "{{ nextcloud_php_executable }} occ config:app:set {{ item.app_name }} {{ item.config_name }} --value=\"{{ item.value }}\" --type={{ item.type | default('string') }}"
+    chdir: "{{ __nextcloud_installation_directory }}"
+  become_user: "{{ nextcloud_webserver_user }}"
+  become: yes
+  changed_when: false
+  loop: "{{ nextcloud_apps_settings }}"
+
+- name: Setting the background job to cron
+  ansible.builtin.command:
+    cmd: "{{ nextcloud_php_executable }} occ background:cron"
+    chdir: "{{ __nextcloud_installation_directory }}"
+  become_user: "{{ nextcloud_webserver_user }}"
+  become: yes
+  changed_when: false
+
+- name: Add the cron job
+  ansible.builtin.cron:
+    job: "{{ nextcloud_php_executable }} -f {{ __nextcloud_installation_directory }}/cron.php"
+    minute: "*/5"
+    name: nextcloud_cron
+    state: present
+    user: "{{ nextcloud_webserver_user }}"
+
+- name: Template the nginx configuration
+  ansible.builtin.template:
+    src: "{{ nextcloud_nginx_template }}"
+    dest: "{{ nextcloud_nginx_configuration }}"
+    owner: "{{ nextcloud_webserver_user }}"
+    group: "{{ nextcloud_webserver_group }}"
+    mode: "0640"
+  when: nextcloud_nginx_template is defined and nextcloud_nginx_template
+  notify: restart_webserver

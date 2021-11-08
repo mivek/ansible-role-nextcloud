@@ -6,7 +6,6 @@
   gather_facts: true
   become: true
   tasks:
-
   - name: Get stat of installation directory
     ansible.builtin.stat:
       path: /var/www/nextcloud
@@ -21,6 +20,16 @@
     ansible.builtin.stat:
       path: /opt/nextcloud
     register: nextcloud_data
+
+  - name: Get stat on the backup script
+    ansible.builtin.stat:
+      path: /var/www/nextcloud/backup.sh
+    register: nextcloud_backup_script
+
+  - name: Get stat on the root cron file
+    ansible.builtin.stat:
+      path: /var/spool/cron/crontabs/root
+    register: nextcloud_cron_root
 
   - name: Access the uri
     ansible.builtin.uri:
@@ -72,3 +81,19 @@
         - http.status == 200
         - http.content is search("<title>\s*Nextcloud\s*</title>")
         - http.content is search("a safe home for all your data")
+
+  - name: Checks on the backup script
+    ansible.builtin.assert:
+      that:
+        - nextcloud_backup_script.stat.isreg
+        - nextcloud_backup_script.stat.pw_name == 'root'
+        - nextcloud_backup_script.stat.gr_name == 'root'
+        - nextcloud_backup_script.stat.mode == '0700'
+
+  - name: Checks on the root cron file
+    ansible.builtin.assert:
+      that:
+        - nextcloud_cron_root.stat.isreg
+        - nextcloud_cron_root.stat.pw_name == 'root'
+        - nextcloud_cron_root.stat.gr_name == 'crontab'
+        - nextcloud_cron_root.stat.mode == '0600'

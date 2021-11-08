@@ -25,11 +25,21 @@ nextcloud_server_http_certificate:
 nextcloud_server_http_certificate_key:
 nextcloud_nginx_template: nginx.conf.j2
 nextcloud_nginx_configuration: /etc/nginx/conf.d/nextcloud.conf
+nextcloud_database:
+  type: mysql # pgsql, mysql, sqlite or oci
+  host: localhost
+  name: nextcloud
+  user:
+  password:
 
-nextcloud_database_type: mysql # pgsql, mysql, sqlite or oci
-nextcloud_database_name: nextcloud
-nextcloud_database_user:
-nextcloud_database_password:
 nextcloud_admin_user:
 nextcloud_admin_password:
 nextcloud_apps_settings: []
+nextcloud_php_executable: php
+nextcloud_backup_directory:
+nextcloud_backup_cron:
+  minute:
+  hour:
+  day:
+  month:
+  weekday:

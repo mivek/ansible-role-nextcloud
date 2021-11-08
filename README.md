@@ -35,14 +35,13 @@ Role Variables
 |nextcloud_server_http_certificate_key| | path | The path to the certificate key
 |nextcloud_nginx_template| nginx.conf.j2 | path | When the nextcloud_server_web is nginx, the path to the nginx template to use.
 |nextcloud_nginx_configuration| /etc/nginx/conf.d/nextcloud.conf | path | The path where the nextcloud nginx configuration should be deployed.
-|nextcloud_database_type| mysql | string | The type of database nextcloud will use. Accepted values are: mysql, pgsql, sqlite and oci
-|nextcloud_database_name| nextcloud| string | The name of the database nextcloud will use. The database must exist before the execution of the role.
-|nextcloud_database_user| | string | The user to use when connecting to the database
-|nextcloud_database_password| | string | The password of the user to use when connecting to the database
+|nextcloud_database |  | Object | Object to represent the database. The accepted keys are `type`, `host`, `name`, `user` and password. The accepted values for the type are: mysql, pgsql, sqlite and oci
 |nextcloud_admin| | string | Name of the admin of the nextcloud server
 |nextcloud_admin_password| | string | Password of the admin of the nextcloud server
 |nextcloud_apps_settings| [] | List of objects | List of settings for nextcloud applications. A setting is compose of the `app_name`, the `setting_name`, the `value` and the `type`.
-
+|nextcloud_php_executable| php | string | The PHP executable to use when running commands.
+|nextcloud_backup_directory|  | path | Path of the directory that will store backups.
+|nextcloud_backup_cron|  | Object | Object to configure the backup script cron. The keys are `minute`, `hour`, `day`, `month` and `weekday`.
 
 Dependencies
 ------------

@@ -1,0 +1,17 @@
+#!bin/sh
+# {{ ansible_managed}}
+
+sudo -u {{ nextcloud_webserver_user }} {{ nextcloud_php_executable }} {{ __nextcloud_installation_directory }}/occ maintenance:mode --on
+
+rsync -Aavx {{ nextcloud_data_directory }}/ {{ nextcloud_backup_directory }}/nextcloud-databkp_`date +"%Y%m%d"`/
+
+
+{% if nextcloud_database.type == 'mysql' %}
+mysqldump --single-transaction -h {{ nextcloud_database.host }} -u {{ nextcloud_database.user }} -p {{ nextcloud_database.password }} {{ nextcloud_database.name }} > {{ nextcloud_backup_directory }}/nextcloud-sqlbkp_`date +"%Y%m%d"`.bak
+{% elif nextcloud_database.type == 'sqlite' %}
+sqlite3 {{ nextcloud_database.name }} .dump > {{ nextcloud_backup_directory }}/nextcloud-sqlbkp_`date +"%Y%m%d"`.bak
+{% elif nextcloud_database.type == 'pgsql' %}
+PGPASSWORD="{{ nextcloud_database.password }}" pg_dump {{ nextcloud_database.name }} -h {{ nextcloud_database.host }} -U {{ nextcloud_database.user }} -f {{ nextcloud_backup_directory }}/nextcloud-sqlbkp_`date +"%Y%m%d"`.bak
+{% endif %}
+
+sudo -u {{ nextcloud_webserver_user }} {{ nextcloud_php_executable }} {{ __nextcloud_installation_directory }}/occ maintenance:mode --off
